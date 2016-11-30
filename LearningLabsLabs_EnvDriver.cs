@@ -24,9 +24,9 @@ using Microsoft.Win32;
 using QualiSystems.Libraries;
 using QualiSystems.Driver;
 
-[assembly: AssemblyVersion("1.0.0.1")]
-[assembly: AssemblyFileVersion("1.0.0.1")]
-[assembly: AssemblyTitle("V1.0.0.0 - Initial Setup.  Messy.  2016.10.12 - Dan Klingler\r\nv1.0.0.1 - Much more progress.  2016.11.4 - Dan Klingler\r\n\r\n")]
+[assembly: AssemblyVersion("1.0.1.0")]
+[assembly: AssemblyFileVersion("1.0.1.0")]
+[assembly: AssemblyTitle("V1.0.0.0 - Initial Setup.  Messy.  2016.10.12 - Dan Klingler\r\nv1.0.0.1 - Much more progress.  2016.11.4 - Dan Klingler\r\nv1.0.1.0 - Much more work.  First Beta testing wtih Jacob.  2016.11.29 - Dan Klingler\r\n\r\n")]
 [assembly: AssemblyProduct("[<AssemblyName>] 7.0.0")]
 [assembly: Library(typeof(LearningLabsLabs_EnvDriver), "", IsolationLevel.PerLibrary)]
 [assembly: MethodsCategory("Hidden Commands", 0)]
@@ -37,7 +37,7 @@ using QualiSystems.Driver;
 
 namespace QualiSystems.Driver
 {
-	[Description("V1.0.0.0 - Initial Setup.  Messy.  2016.10.12 - Dan Klingler\r\nv1.0.0.1 - Much more progress.  2016.11.4 - Dan Klingler\r\n\r\n")]
+	[Description("V1.0.0.0 - Initial Setup.  Messy.  2016.10.12 - Dan Klingler\r\nv1.0.0.1 - Much more progress.  2016.11.4 - Dan Klingler\r\nv1.0.1.0 - Much more work.  First Beta testing wtih Jacob.  2016.11.29 - Dan Klingler\r\n\r\n")]
     public class LearningLabsLabs_EnvDriver : ICancelable, IDisposable
     {
         private static readonly Assembly DriverRuntimeAssembly;
@@ -67,8 +67,12 @@ namespace QualiSystems.Driver
 		private object m_Action_TerminateFunctionInterpreterLock = new object();
 		private IFunctionInterpreter m_System_BringToReadyFunctionInterpreter = null;
 		private object m_System_BringToReadyFunctionInterpreterLock = new object();
+		private IFunctionInterpreter m_System_ClaimFunctionInterpreter = null;
+		private object m_System_ClaimFunctionInterpreterLock = new object();
 		private IFunctionInterpreter m_System_GetAttributeFunctionInterpreter = null;
 		private object m_System_GetAttributeFunctionInterpreterLock = new object();
+		private IFunctionInterpreter m_System_NoReadySystemsForUserFunctionInterpreter = null;
+		private object m_System_NoReadySystemsForUserFunctionInterpreterLock = new object();
 		private IFunctionInterpreter m_System_SetAttributeFunctionInterpreter = null;
 		private object m_System_SetAttributeFunctionInterpreterLock = new object();
 		private IFunctionInterpreter m_System_TerminateFunctionInterpreter = null;
@@ -81,10 +85,8 @@ namespace QualiSystems.Driver
 		private object m_Util_QueryUserHasActiveSystemFunctionInterpreterLock = new object();
 		private IFunctionInterpreter m_Util_ToOutputWindowFunctionInterpreter = null;
 		private object m_Util_ToOutputWindowFunctionInterpreterLock = new object();
-		private IFunctionInterpreter m_VCenter_SystemOffFunctionInterpreter = null;
-		private object m_VCenter_SystemOffFunctionInterpreterLock = new object();
-		private IFunctionInterpreter m_VCenter_SystemOnFunctionInterpreter = null;
-		private object m_VCenter_SystemOnFunctionInterpreterLock = new object();
+		private IFunctionInterpreter m_VCenter_SystemOnOffFunctionInterpreter = null;
+		private object m_VCenter_SystemOnOffFunctionInterpreterLock = new object();
 
 		
 		static LearningLabsLabs_EnvDriver()
@@ -123,15 +125,16 @@ namespace QualiSystems.Driver
 			m_Action_RequestFunctionInterpreter = CreateFunctionInterpreter("LearningLabsLabs_EnvDriver\\Functions\\Action_Request.tsdrv");
 			m_Action_TerminateFunctionInterpreter = CreateFunctionInterpreter("LearningLabsLabs_EnvDriver\\Functions\\Action_Terminate.tsdrv");
 			m_System_BringToReadyFunctionInterpreter = CreateFunctionInterpreter("LearningLabsLabs_EnvDriver\\Functions\\System_BringToReady.tsdrv");
+			m_System_ClaimFunctionInterpreter = CreateFunctionInterpreter("LearningLabsLabs_EnvDriver\\Functions\\System_Claim.tsdrv");
 			m_System_GetAttributeFunctionInterpreter = CreateFunctionInterpreter("LearningLabsLabs_EnvDriver\\Functions\\System_GetAttribute.tsdrv");
+			m_System_NoReadySystemsForUserFunctionInterpreter = CreateFunctionInterpreter("LearningLabsLabs_EnvDriver\\Functions\\System_NoReadySystemsForUser.tsdrv");
 			m_System_SetAttributeFunctionInterpreter = CreateFunctionInterpreter("LearningLabsLabs_EnvDriver\\Functions\\System_SetAttribute.tsdrv");
 			m_System_TerminateFunctionInterpreter = CreateFunctionInterpreter("LearningLabsLabs_EnvDriver\\Functions\\System_Terminate.tsdrv");
 			m_Util_GetReservationIdFunctionInterpreter = CreateFunctionInterpreter("LearningLabsLabs_EnvDriver\\Functions\\Util_GetReservationId.tsdrv");
 			m_Util_GetSystemAttributeInformationFunctionInterpreter = CreateFunctionInterpreter("LearningLabsLabs_EnvDriver\\Functions\\Util_GetSystemAttributeInformation.tsdrv");
 			m_Util_QueryUserHasActiveSystemFunctionInterpreter = CreateFunctionInterpreter("LearningLabsLabs_EnvDriver\\Functions\\Util_QueryUserHasActiveSystem.tsdrv");
 			m_Util_ToOutputWindowFunctionInterpreter = CreateFunctionInterpreter("LearningLabsLabs_EnvDriver\\Functions\\Util_ToOutputWindow.tsdrv");
-			m_VCenter_SystemOffFunctionInterpreter = CreateFunctionInterpreter("LearningLabsLabs_EnvDriver\\Functions\\VCenter_SystemOff.tsdrv");
-			m_VCenter_SystemOnFunctionInterpreter = CreateFunctionInterpreter("LearningLabsLabs_EnvDriver\\Functions\\VCenter_SystemOn.tsdrv");
+			m_VCenter_SystemOnOffFunctionInterpreter = CreateFunctionInterpreter("LearningLabsLabs_EnvDriver\\Functions\\VCenter_SystemOnOff.tsdrv");
 
         }
         
@@ -326,7 +329,7 @@ namespace QualiSystems.Driver
 
 		[Folder("Functions")]
 		[Cancelable]
-		public void @Action_Request([Alias("UserID")]  string @UserID, [Alias("TTL_Hrs")]  double @TTL_Hrs)
+		public void @Action_Request([Alias("UserID")]  string @UserID, [Alias("TTL_Mins")]  double @TTL_Mins)
 		{
 			lock(m_Action_RequestFunctionInterpreterLock)
 			{
@@ -338,7 +341,7 @@ namespace QualiSystems.Driver
 				callId = CancellationContext.Current.CallId;
 			Dictionary<string, object> inputNamesValues = new Dictionary<string, object>();
 			inputNamesValues["UserID"] = @UserID;
-			inputNamesValues["TTL_Hrs"] = @TTL_Hrs;
+			inputNamesValues["TTL_Mins"] = @TTL_Mins;
 			Dictionary<string, Type> outputNamesTypes = new Dictionary<string, Type>();
 			Dictionary<string, object> outputNamesValues = m_Action_RequestFunctionInterpreter.Run(callId, inputNamesValues, outputNamesTypes);
 		}
@@ -363,7 +366,7 @@ namespace QualiSystems.Driver
 
 		[Folder("Functions")]
 		[Cancelable]
-		public void @System_BringToReady([Alias("ResourceName")]  string @ResourceName, [Alias("BootTimeSecs")]  double @BootTimeSecs)
+		public void @System_BringToReady([Alias("ResourceName")]  string @ResourceName, [Alias("VMName")]  string @VMName, [Alias("BootTimeSecs")]  double @BootTimeSecs)
 		{
 			lock(m_System_BringToReadyFunctionInterpreterLock)
 			{
@@ -375,9 +378,35 @@ namespace QualiSystems.Driver
 				callId = CancellationContext.Current.CallId;
 			Dictionary<string, object> inputNamesValues = new Dictionary<string, object>();
 			inputNamesValues["ResourceName"] = @ResourceName;
+			inputNamesValues["VMName"] = @VMName;
 			inputNamesValues["BootTimeSecs"] = @BootTimeSecs;
 			Dictionary<string, Type> outputNamesTypes = new Dictionary<string, Type>();
 			Dictionary<string, object> outputNamesValues = m_System_BringToReadyFunctionInterpreter.Run(callId, inputNamesValues, outputNamesTypes);
+		}
+
+		[Folder("Functions")]
+		[Cancelable]
+		public void @System_Claim([Alias("AttemptingToClaimSystemName")]  string @AttemptingToClaimSystemName, [Alias("UserID")]  string @UserID, [Alias("FLAG_SUCCESS")] out double @FLAG_SUCCESS, [Alias("ClaimedSystemName")] out string @ClaimedSystemName, [Alias("FLAG_LOST_RACE")] out double @FLAG_LOST_RACE)
+		{
+			lock(m_System_ClaimFunctionInterpreterLock)
+			{
+				if(m_System_ClaimFunctionInterpreter == null)
+					m_System_ClaimFunctionInterpreter = CreateFunctionInterpreter("LearningLabsLabs_EnvDriver\\Functions\\System_Claim.tsdrv");
+			}
+			Guid callId = Guid.Empty;
+			if(CancellationContext.Current != null)
+				callId = CancellationContext.Current.CallId;
+			Dictionary<string, object> inputNamesValues = new Dictionary<string, object>();
+			inputNamesValues["AttemptingToClaimSystemName"] = @AttemptingToClaimSystemName;
+			inputNamesValues["UserID"] = @UserID;
+			Dictionary<string, Type> outputNamesTypes = new Dictionary<string, Type>();
+			outputNamesTypes["FLAG_SUCCESS"] = typeof(double);
+			outputNamesTypes["ClaimedSystemName"] = typeof(string);
+			outputNamesTypes["FLAG_LOST_RACE"] = typeof(double);
+			Dictionary<string, object> outputNamesValues = m_System_ClaimFunctionInterpreter.Run(callId, inputNamesValues, outputNamesTypes);
+			@FLAG_SUCCESS =  (double)outputNamesValues["FLAG_SUCCESS"];
+			@ClaimedSystemName =  (string)outputNamesValues["ClaimedSystemName"];
+			@FLAG_LOST_RACE =  (double)outputNamesValues["FLAG_LOST_RACE"];
 		}
 
 		[Folder("Functions")]
@@ -399,6 +428,28 @@ namespace QualiSystems.Driver
 			outputNamesTypes["AttributeValue"] = typeof(string);
 			Dictionary<string, object> outputNamesValues = m_System_GetAttributeFunctionInterpreter.Run(callId, inputNamesValues, outputNamesTypes);
 			@AttributeValue =  (string)outputNamesValues["AttributeValue"];
+		}
+
+		[Folder("Functions")]
+		[Cancelable]
+		public void @System_NoReadySystemsForUser([Alias("UserID")]  string @UserID, [Alias("FLAG_SUCCESS")] out double @FLAG_SUCCESS, [Alias("ClaimedSystemName")] out string @ClaimedSystemName)
+		{
+			lock(m_System_NoReadySystemsForUserFunctionInterpreterLock)
+			{
+				if(m_System_NoReadySystemsForUserFunctionInterpreter == null)
+					m_System_NoReadySystemsForUserFunctionInterpreter = CreateFunctionInterpreter("LearningLabsLabs_EnvDriver\\Functions\\System_NoReadySystemsForUser.tsdrv");
+			}
+			Guid callId = Guid.Empty;
+			if(CancellationContext.Current != null)
+				callId = CancellationContext.Current.CallId;
+			Dictionary<string, object> inputNamesValues = new Dictionary<string, object>();
+			inputNamesValues["UserID"] = @UserID;
+			Dictionary<string, Type> outputNamesTypes = new Dictionary<string, Type>();
+			outputNamesTypes["FLAG_SUCCESS"] = typeof(double);
+			outputNamesTypes["ClaimedSystemName"] = typeof(string);
+			Dictionary<string, object> outputNamesValues = m_System_NoReadySystemsForUserFunctionInterpreter.Run(callId, inputNamesValues, outputNamesTypes);
+			@FLAG_SUCCESS =  (double)outputNamesValues["FLAG_SUCCESS"];
+			@ClaimedSystemName =  (string)outputNamesValues["ClaimedSystemName"];
 		}
 
 		[Folder("Functions")]
@@ -462,7 +513,7 @@ namespace QualiSystems.Driver
 
 		[Folder("Functions")]
 		[Cancelable]
-		public void @Util_GetSystemAttributeInformation([Alias("FullResourceAttributeMatrix")] out string[,] @FullResourceAttributeMatrix, [Alias("ResourceAttributeMatrix_ERROR")] out string[,] @ResourceAttributeMatrix_ERROR, [Alias("ResourceAttributeMatrix_GOINGDOWN")] out string[,] @ResourceAttributeMatrix_GOINGDOWN, [Alias("ResourceAttributeMatrix_INUSE")] out string[,] @ResourceAttributeMatrix_INUSE, [Alias("ResourceAttributeMatrix_MAX")] out string[,] @ResourceAttributeMatrix_MAX, [Alias("ResourceAttributeMatrix_OFF")] out string[,] @ResourceAttributeMatrix_OFF, [Alias("ResourceAttributeMatrix_PROVISIONING")] out string[,] @ResourceAttributeMatrix_PROVISIONING, [Alias("ResourceAttributeMatrix_READY")] out string[,] @ResourceAttributeMatrix_READY, [Alias("NumInState_ERROR")] out double @NumInState_ERROR, [Alias("NumInState_FULL")] out double @NumInState_FULL, [Alias("NumInState_GOINGDOWN")] out double @NumInState_GOINGDOWN, [Alias("NumInState_INUSE")] out double @NumInState_INUSE, [Alias("NumInState_MAX")] out double @NumInState_MAX, [Alias("NumInState_OFF")] out double @NumInState_OFF, [Alias("NumInState_PROVISIONING")] out double @NumInState_PROVISIONING, [Alias("NumInState_READY")] out double @NumInState_READY, [Alias("FastLab_BootTimeSecs")] out double @FastLab_BootTimeSecs, [Alias("FastLab_LabMaxHours")] out double @FastLab_LabMaxHours, [Alias("FastLab_ReadyPoolSize")] out double @FastLab_ReadyPoolSize)
+		public void @Util_GetSystemAttributeInformation([Alias("FullResourceAttributeMatrix")] out string[,] @FullResourceAttributeMatrix, [Alias("ResourceAttributeMatrix_ERROR")] out string[,] @ResourceAttributeMatrix_ERROR, [Alias("ResourceAttributeMatrix_GOINGDOWN")] out string[,] @ResourceAttributeMatrix_GOINGDOWN, [Alias("ResourceAttributeMatrix_INUSE")] out string[,] @ResourceAttributeMatrix_INUSE, [Alias("ResourceAttributeMatrix_MAX")] out string[,] @ResourceAttributeMatrix_MAX, [Alias("ResourceAttributeMatrix_OFF")] out string[,] @ResourceAttributeMatrix_OFF, [Alias("ResourceAttributeMatrix_PROVISIONING")] out string[,] @ResourceAttributeMatrix_PROVISIONING, [Alias("ResourceAttributeMatrix_READY")] out string[,] @ResourceAttributeMatrix_READY, [Alias("NumInState_ERROR")] out double @NumInState_ERROR, [Alias("NumInState_FULL")] out double @NumInState_FULL, [Alias("NumInState_GOINGDOWN")] out double @NumInState_GOINGDOWN, [Alias("NumInState_INUSE")] out double @NumInState_INUSE, [Alias("NumInState_MAX")] out double @NumInState_MAX, [Alias("NumInState_OFF")] out double @NumInState_OFF, [Alias("NumInState_PROVISIONING")] out double @NumInState_PROVISIONING, [Alias("NumInState_READY")] out double @NumInState_READY, [Alias("FastLab_BootTimeSecs")] out double @FastLab_BootTimeSecs, [Alias("FastLab_LabDefaultTTLMins")] out double @FastLab_LabDefaultTTLMins, [Alias("FastLab_ReadyPoolSize")] out double @FastLab_ReadyPoolSize)
 		{
 			lock(m_Util_GetSystemAttributeInformationFunctionInterpreterLock)
 			{
@@ -491,7 +542,7 @@ namespace QualiSystems.Driver
 			outputNamesTypes["NumInState_PROVISIONING"] = typeof(double);
 			outputNamesTypes["NumInState_READY"] = typeof(double);
 			outputNamesTypes["FastLab_BootTimeSecs"] = typeof(double);
-			outputNamesTypes["FastLab_LabMaxHours"] = typeof(double);
+			outputNamesTypes["FastLab_LabDefaultTTLMins"] = typeof(double);
 			outputNamesTypes["FastLab_ReadyPoolSize"] = typeof(double);
 			Dictionary<string, object> outputNamesValues = m_Util_GetSystemAttributeInformationFunctionInterpreter.Run(callId, inputNamesValues, outputNamesTypes);
 			@FullResourceAttributeMatrix =  (string[,])outputNamesValues["ResourceAttributeMatrix_FULL"];
@@ -511,7 +562,7 @@ namespace QualiSystems.Driver
 			@NumInState_PROVISIONING =  (double)outputNamesValues["NumInState_PROVISIONING"];
 			@NumInState_READY =  (double)outputNamesValues["NumInState_READY"];
 			@FastLab_BootTimeSecs =  (double)outputNamesValues["FastLab_BootTimeSecs"];
-			@FastLab_LabMaxHours =  (double)outputNamesValues["FastLab_LabMaxHours"];
+			@FastLab_LabDefaultTTLMins =  (double)outputNamesValues["FastLab_LabDefaultTTLMins"];
 			@FastLab_ReadyPoolSize =  (double)outputNamesValues["FastLab_ReadyPoolSize"];
 		}
 
@@ -558,38 +609,21 @@ namespace QualiSystems.Driver
 
 		[Folder("Functions")]
 		[Cancelable]
-		public void @VCenter_SystemOff([Alias("VMName")]  string @VMName)
+		public void @VCenter_SystemOnOff([Alias("VMName")]  string @VMName, [Alias("CommandString")]  string @CommandString)
 		{
-			lock(m_VCenter_SystemOffFunctionInterpreterLock)
+			lock(m_VCenter_SystemOnOffFunctionInterpreterLock)
 			{
-				if(m_VCenter_SystemOffFunctionInterpreter == null)
-					m_VCenter_SystemOffFunctionInterpreter = CreateFunctionInterpreter("LearningLabsLabs_EnvDriver\\Functions\\VCenter_SystemOff.tsdrv");
+				if(m_VCenter_SystemOnOffFunctionInterpreter == null)
+					m_VCenter_SystemOnOffFunctionInterpreter = CreateFunctionInterpreter("LearningLabsLabs_EnvDriver\\Functions\\VCenter_SystemOnOff.tsdrv");
 			}
 			Guid callId = Guid.Empty;
 			if(CancellationContext.Current != null)
 				callId = CancellationContext.Current.CallId;
 			Dictionary<string, object> inputNamesValues = new Dictionary<string, object>();
 			inputNamesValues["VMName"] = @VMName;
+			inputNamesValues["ActionString"] = @CommandString;
 			Dictionary<string, Type> outputNamesTypes = new Dictionary<string, Type>();
-			Dictionary<string, object> outputNamesValues = m_VCenter_SystemOffFunctionInterpreter.Run(callId, inputNamesValues, outputNamesTypes);
-		}
-
-		[Folder("Functions")]
-		[Cancelable]
-		public void @VCenter_SystemOn([Alias("VMName")]  string @VMName)
-		{
-			lock(m_VCenter_SystemOnFunctionInterpreterLock)
-			{
-				if(m_VCenter_SystemOnFunctionInterpreter == null)
-					m_VCenter_SystemOnFunctionInterpreter = CreateFunctionInterpreter("LearningLabsLabs_EnvDriver\\Functions\\VCenter_SystemOn.tsdrv");
-			}
-			Guid callId = Guid.Empty;
-			if(CancellationContext.Current != null)
-				callId = CancellationContext.Current.CallId;
-			Dictionary<string, object> inputNamesValues = new Dictionary<string, object>();
-			inputNamesValues["VMName"] = @VMName;
-			Dictionary<string, Type> outputNamesTypes = new Dictionary<string, Type>();
-			Dictionary<string, object> outputNamesValues = m_VCenter_SystemOnFunctionInterpreter.Run(callId, inputNamesValues, outputNamesTypes);
+			Dictionary<string, object> outputNamesValues = m_VCenter_SystemOnOffFunctionInterpreter.Run(callId, inputNamesValues, outputNamesTypes);
 		}
 
 
@@ -862,5 +896,15 @@ namespace QualiSystems.Driver
 		}
     }
 
-	
+		public enum Lab_Number
+	{
+		None=-1,
+		AutoChoose=0,
+		L03_T01=1,
+		L12_T01=48,
+		L12_T02=49,
+		L13_T02=55
+	}
+
+
 }

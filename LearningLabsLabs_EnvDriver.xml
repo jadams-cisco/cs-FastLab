@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<DriverDocumentation xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="LearningLabsLabs_EnvDriver" Version="1.0.0.1" Description="V1.0.0.0 - Initial Setup.  Messy.  2016.10.12 - Dan Klingler&#xD;&#xA;v1.0.0.1 - Much more progress.  2016.11.4 - Dan Klingler&#xD;&#xA;&#xD;&#xA;" OutputType="EXE" DriverBuilderVersion="7.0.0" xmlns="http://schemas.qualisystems.com/DriverDocumentation.xsd">
+<DriverDocumentation xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="LearningLabsLabs_EnvDriver" Version="1.0.1.0" Description="V1.0.0.0 - Initial Setup.  Messy.  2016.10.12 - Dan Klingler&#xD;&#xA;v1.0.0.1 - Much more progress.  2016.11.4 - Dan Klingler&#xD;&#xA;v1.0.1.0 - Much more work.  First Beta testing wtih Jacob.  2016.11.29 - Dan Klingler&#xD;&#xA;&#xD;&#xA;" OutputType="EXE" DriverBuilderVersion="7.0.0" xmlns="http://schemas.qualisystems.com/DriverDocumentation.xsd">
   <Function Name="EntryPoint" Description="Main entry point for an executable" IsImplemented="true" IsEntryPoint="true" ReturnValueName="Returnparam" ReturnValueType="int" ReturnValueDescription="">
     <Parameter Name="argsparam" Type="string[]" Direction="In" />
   </Function>
@@ -25,19 +25,32 @@
   <Function Name="Action_ManagePool" Folder="Functions" IsImplemented="true" />
   <Function Name="Action_Request" Folder="Functions" IsImplemented="true">
     <Parameter Name="UserID" Type="string" Direction="In" />
-    <Parameter Name="TTL_Hrs" Type="double" Direction="In" />
+    <Parameter Name="TTL_Mins" Type="double" Direction="In" />
   </Function>
   <Function Name="Action_Terminate" Folder="Functions" IsImplemented="true">
     <Parameter Name="UserID" Type="string" Direction="In" />
   </Function>
   <Function Name="System_BringToReady" Folder="Functions" IsImplemented="true">
     <Parameter Name="ResourceName" Type="string" Direction="In" />
+    <Parameter Name="VMName" Type="string" Direction="In" />
     <Parameter Name="BootTimeSecs" Type="double" Direction="In" />
+  </Function>
+  <Function Name="System_Claim" Folder="Functions" IsImplemented="true">
+    <Parameter Name="AttemptingToClaimSystemName" Type="string" Direction="In" />
+    <Parameter Name="UserID" Type="string" Direction="In" />
+    <Parameter Name="FLAG_SUCCESS" Type="double" Direction="Out" />
+    <Parameter Name="ClaimedSystemName" Type="string" Direction="Out" />
+    <Parameter Name="FLAG_LOST_RACE" Type="double" Direction="Out" />
   </Function>
   <Function Name="System_GetAttribute" Folder="Functions" IsImplemented="true">
     <Parameter Name="ResourceName" Type="string" Direction="In" />
     <Parameter Name="AttributeName" Type="string" Direction="In" />
     <Parameter Name="AttributeValue" Type="string" Direction="Out" />
+  </Function>
+  <Function Name="System_NoReadySystemsForUser" Folder="Functions" IsImplemented="true">
+    <Parameter Name="UserID" Type="string" Direction="In" />
+    <Parameter Name="FLAG_SUCCESS" Type="double" Direction="Out" />
+    <Parameter Name="ClaimedSystemName" Type="string" Direction="Out" />
   </Function>
   <Function Name="System_SetAttribute" Folder="Functions" IsImplemented="true">
     <Parameter Name="ResourceName" Type="string" Direction="In" />
@@ -70,7 +83,7 @@
     <Parameter Name="NumInState_PROVISIONING" Type="double" Direction="Out" />
     <Parameter Name="NumInState_READY" Type="double" Direction="Out" />
     <Parameter Name="FastLab_BootTimeSecs" Type="double" Direction="Out" />
-    <Parameter Name="FastLab_LabMaxHours" Type="double" Direction="Out" />
+    <Parameter Name="FastLab_LabDefaultTTLMins" Type="double" Direction="Out" />
     <Parameter Name="FastLab_ReadyPoolSize" Type="double" Direction="Out" />
   </Function>
   <Function Name="Util_QueryUserHasActiveSystem" Folder="Functions" IsImplemented="true">
@@ -82,10 +95,16 @@
   <Function Name="Util_ToOutputWindow" Folder="Functions" IsImplemented="true">
     <Parameter Name="OutMsg" Type="string" Direction="In" />
   </Function>
-  <Function Name="VCenter_SystemOff" Folder="Functions" IsImplemented="true">
+  <Function Name="VCenter_SystemOnOff" Folder="Functions" IsImplemented="true">
     <Parameter Name="VMName" Type="string" Direction="In" />
+    <Parameter Name="CommandString" Type="string" Direction="In" />
   </Function>
-  <Function Name="VCenter_SystemOn" Folder="Functions" IsImplemented="true">
-    <Parameter Name="VMName" Type="string" Direction="In" />
-  </Function>
+  <Enumeration Name="Lab_Number">
+    <Member Name="None" Value="-1" />
+    <Member Name="AutoChoose" Value="0" />
+    <Member Name="L03_T01" Value="1" />
+    <Member Name="L12_T01" Value="48" />
+    <Member Name="L12_T02" Value="49" />
+    <Member Name="L13_T02" Value="55" />
+  </Enumeration>
 </DriverDocumentation>
