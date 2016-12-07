@@ -24,9 +24,9 @@ using Microsoft.Win32;
 using QualiSystems.Libraries;
 using QualiSystems.Driver;
 
-[assembly: AssemblyVersion("1.0.1.0")]
-[assembly: AssemblyFileVersion("1.0.1.0")]
-[assembly: AssemblyTitle("V1.0.0.0 - Initial Setup.  Messy.  2016.10.12 - Dan Klingler\r\nv1.0.0.1 - Much more progress.  2016.11.4 - Dan Klingler\r\nv1.0.1.0 - Much more work.  First Beta testing wtih Jacob.  2016.11.29 - Dan Klingler\r\n\r\n")]
+[assembly: AssemblyVersion("1.0.1.1")]
+[assembly: AssemblyFileVersion("1.0.1.1")]
+[assembly: AssemblyTitle("V1.0.0.0 - Initial Setup.  Messy.  2016.10.12 - Dan Klingler\r\nv1.0.0.1 - Much more progress.  2016.11.4 - Dan Klingler\r\nv1.0.1.0 - Much more work.  First Beta testing wtih Jacob.  2016.11.29 - Dan Klingler\r\nv1.0.1.1 - More minor iterations.  Stitching with Py code.  2016.12.07 - Dan Klingler\r\n\r\n")]
 [assembly: AssemblyProduct("[<AssemblyName>] 7.0.0")]
 [assembly: Library(typeof(LearningLabsLabs_EnvDriver), "", IsolationLevel.PerLibrary)]
 [assembly: MethodsCategory("Hidden Commands", 0)]
@@ -37,7 +37,7 @@ using QualiSystems.Driver;
 
 namespace QualiSystems.Driver
 {
-	[Description("V1.0.0.0 - Initial Setup.  Messy.  2016.10.12 - Dan Klingler\r\nv1.0.0.1 - Much more progress.  2016.11.4 - Dan Klingler\r\nv1.0.1.0 - Much more work.  First Beta testing wtih Jacob.  2016.11.29 - Dan Klingler\r\n\r\n")]
+	[Description("V1.0.0.0 - Initial Setup.  Messy.  2016.10.12 - Dan Klingler\r\nv1.0.0.1 - Much more progress.  2016.11.4 - Dan Klingler\r\nv1.0.1.0 - Much more work.  First Beta testing wtih Jacob.  2016.11.29 - Dan Klingler\r\nv1.0.1.1 - More minor iterations.  Stitching with Py code.  2016.12.07 - Dan Klingler\r\n\r\n")]
     public class LearningLabsLabs_EnvDriver : ICancelable, IDisposable
     {
         private static readonly Assembly DriverRuntimeAssembly;
