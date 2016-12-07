@@ -99,12 +99,4 @@
     <Parameter Name="VMName" Type="string" Direction="In" />
     <Parameter Name="CommandString" Type="string" Direction="In" />
   </Function>
-  <Enumeration Name="Lab_Number">
-    <Member Name="None" Value="-1" />
-    <Member Name="AutoChoose" Value="0" />
-    <Member Name="L03_T01" Value="1" />
-    <Member Name="L12_T01" Value="48" />
-    <Member Name="L12_T02" Value="49" />
-    <Member Name="L13_T02" Value="55" />
-  </Enumeration>
 </DriverDocumentation>

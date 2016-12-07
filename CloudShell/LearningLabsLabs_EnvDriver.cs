@@ -896,15 +896,5 @@ namespace QualiSystems.Driver
 		}
     }
 
-		public enum Lab_Number
-	{
-		None=-1,
-		AutoChoose=0,
-		L03_T01=1,
-		L12_T01=48,
-		L12_T02=49,
-		L13_T02=55
-	}
-
-
+	
 }
