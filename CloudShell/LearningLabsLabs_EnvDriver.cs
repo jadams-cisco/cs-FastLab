@@ -365,7 +365,7 @@ namespace QualiSystems.Driver
 
 		[Folder("Functions")]
 		[Cancelable]
-		public void @System_Claim([Alias("UserID")]  string @UserID, [Alias("ResourceAttributeMatrix_OFF")]  string[,] @ResourceAttributeMatrix_OFF, [Alias("ResourceAttributeMatrix_PROVISIONING")]  string[,] @ResourceAttributeMatrix_PROVISIONING, [Alias("ResourceAttributeMatrix_READY")]  string[,] @ResourceAttributeMatrix_READY, [Alias("FLAG_SUCCESS")] out double @FLAG_SUCCESS, [Alias("ClaimedSystemName")] out string @ClaimedSystemName, [Alias("FLAG_LOST_RACE")] out double @FLAG_LOST_RACE)
+		public void @System_Claim([Alias("UserID")]  string @UserID, [Alias("RAM_READY")]  string[,] @RAM_READY, [Alias("RAM_PROV_Unclaimed")]  string[,] @RAM_PROV_Unclaimed, [Alias("RAM_OFF_Unclaimed")]  string[,] @RAM_OFF_Unclaimed, [Alias("NumInState_READY")]  double @NumInState_READY, [Alias("NumInState_OFF_Unclaimed")]  double @NumInState_OFF_Unclaimed, [Alias("NumInState_PROV_Unclaimed")]  double @NumInState_PROV_Unclaimed, [Alias("FLAG_CLAIM_SUCCESS")] out double @FLAG_CLAIM_SUCCESS, [Alias("ClaimedSystemName")] out string @ClaimedSystemName, [Alias("FLAG_LOST_RACE")] out double @FLAG_LOST_RACE)
 		{
 			lock(m_System_ClaimFunctionInterpreterLock)
 			{
@@ -377,22 +377,25 @@ namespace QualiSystems.Driver
 				callId = CancellationContext.Current.CallId;
 			Dictionary<string, object> inputNamesValues = new Dictionary<string, object>();
 			inputNamesValues["UserID"] = @UserID;
-			inputNamesValues["RAM_OFF"] = @ResourceAttributeMatrix_OFF;
-			inputNamesValues["RAM_PROVISIONING"] = @ResourceAttributeMatrix_PROVISIONING;
-			inputNamesValues["RAM_READY"] = @ResourceAttributeMatrix_READY;
+			inputNamesValues["RAM_READY"] = @RAM_READY;
+			inputNamesValues["RAM_PROV_Unclaimed"] = @RAM_PROV_Unclaimed;
+			inputNamesValues["RAM_OFF_Unclaimed"] = @RAM_OFF_Unclaimed;
+			inputNamesValues["NumInState_READY"] = @NumInState_READY;
+			inputNamesValues["NumInState_OFF_Unclaimed"] = @NumInState_OFF_Unclaimed;
+			inputNamesValues["NumInState_PROV_Unclaimed"] = @NumInState_PROV_Unclaimed;
 			Dictionary<string, Type> outputNamesTypes = new Dictionary<string, Type>();
-			outputNamesTypes["FLAG_SUCCESS"] = typeof(double);
+			outputNamesTypes["FLAG_CLAIM_SUCCESS"] = typeof(double);
 			outputNamesTypes["ClaimedSystemName"] = typeof(string);
 			outputNamesTypes["FLAG_LOST_RACE"] = typeof(double);
 			Dictionary<string, object> outputNamesValues = m_System_ClaimFunctionInterpreter.Run(callId, inputNamesValues, outputNamesTypes);
-			@FLAG_SUCCESS =  (double)outputNamesValues["FLAG_SUCCESS"];
+			@FLAG_CLAIM_SUCCESS =  (double)outputNamesValues["FLAG_CLAIM_SUCCESS"];
 			@ClaimedSystemName =  (string)outputNamesValues["ClaimedSystemName"];
 			@FLAG_LOST_RACE =  (double)outputNamesValues["FLAG_LOST_RACE"];
 		}
 
 		[Folder("Functions")]
 		[Cancelable]
-		public void @System_GetAttribute([Alias("ResourceName")]  string @ResourceName, [Alias("AttributeName")]  string @AttributeName, [Alias("AttributeValue")] out string @AttributeValue)
+		public void @System_GetAttribute([Alias("SystemName")]  string @SystemName, [Alias("AttributeName")]  string @AttributeName, [Alias("AttributeValue")] out string @AttributeValue)
 		{
 			lock(m_System_GetAttributeFunctionInterpreterLock)
 			{
@@ -403,7 +406,7 @@ namespace QualiSystems.Driver
 			if(CancellationContext.Current != null)
 				callId = CancellationContext.Current.CallId;
 			Dictionary<string, object> inputNamesValues = new Dictionary<string, object>();
-			inputNamesValues["ResourceName"] = @ResourceName;
+			inputNamesValues["SystemName"] = @SystemName;
 			inputNamesValues["AttributeName"] = @AttributeName;
 			Dictionary<string, Type> outputNamesTypes = new Dictionary<string, Type>();
 			outputNamesTypes["AttributeValue"] = typeof(string);
@@ -413,7 +416,7 @@ namespace QualiSystems.Driver
 
 		[Folder("Functions")]
 		[Cancelable]
-		public void @System_Provision([Alias("ResourceName")]  string @ResourceName, [Alias("BootTimeSecs")]  double @BootTimeSecs, [Alias("UserID")]  string @UserID)
+		public void @System_Provision([Alias("SystemName")]  string @SystemName, [Alias("BootTimeSecs")]  double @BootTimeSecs, [Alias("UserID")]  string @UserID)
 		{
 			lock(m_System_ProvisionFunctionInterpreterLock)
 			{
@@ -424,7 +427,7 @@ namespace QualiSystems.Driver
 			if(CancellationContext.Current != null)
 				callId = CancellationContext.Current.CallId;
 			Dictionary<string, object> inputNamesValues = new Dictionary<string, object>();
-			inputNamesValues["ResourceName"] = @ResourceName;
+			inputNamesValues["SystemName"] = @SystemName;
 			inputNamesValues["BootTimeSecs"] = @BootTimeSecs;
 			inputNamesValues["UserID"] = @UserID;
 			Dictionary<string, Type> outputNamesTypes = new Dictionary<string, Type>();
@@ -450,7 +453,7 @@ namespace QualiSystems.Driver
 
 		[Folder("Functions")]
 		[Cancelable]
-		public void @System_SetAttribute([Alias("ResourceName")]  string @ResourceName, [Alias("AttributeName")]  string @AttributeName, [Alias("NewAttributeValue")]  string @NewAttributeValue)
+		public void @System_SetAttribute([Alias("SystemName")]  string @SystemName, [Alias("AttributeName")]  string @AttributeName, [Alias("NewAttributeValue")]  string @NewAttributeValue)
 		{
 			lock(m_System_SetAttributeFunctionInterpreterLock)
 			{
@@ -461,7 +464,7 @@ namespace QualiSystems.Driver
 			if(CancellationContext.Current != null)
 				callId = CancellationContext.Current.CallId;
 			Dictionary<string, object> inputNamesValues = new Dictionary<string, object>();
-			inputNamesValues["ResourceName"] = @ResourceName;
+			inputNamesValues["SystemName"] = @SystemName;
 			inputNamesValues["AttributeName"] = @AttributeName;
 			inputNamesValues["NewAttributeValue"] = @NewAttributeValue;
 			Dictionary<string, Type> outputNamesTypes = new Dictionary<string, Type>();
@@ -470,7 +473,7 @@ namespace QualiSystems.Driver
 
 		[Folder("Functions")]
 		[Cancelable]
-		public void @System_Terminate([Alias("ResourceName")]  string @ResourceName, [Alias("VMName")]  string @VMName)
+		public void @System_Terminate([Alias("SystemName")]  string @SystemName, [Alias("VMName")]  string @VMName)
 		{
 			lock(m_System_TerminateFunctionInterpreterLock)
 			{
@@ -481,7 +484,7 @@ namespace QualiSystems.Driver
 			if(CancellationContext.Current != null)
 				callId = CancellationContext.Current.CallId;
 			Dictionary<string, object> inputNamesValues = new Dictionary<string, object>();
-			inputNamesValues["ResourceName"] = @ResourceName;
+			inputNamesValues["SystemName"] = @SystemName;
 			inputNamesValues["VMName"] = @VMName;
 			Dictionary<string, Type> outputNamesTypes = new Dictionary<string, Type>();
 			Dictionary<string, object> outputNamesValues = m_System_TerminateFunctionInterpreter.Run(callId, inputNamesValues, outputNamesTypes);
@@ -509,7 +512,7 @@ namespace QualiSystems.Driver
 
 		[Folder("Functions")]
 		[Cancelable]
-		public void @Util_GetSystemAttributeInformation([Alias("FullResourceAttributeMatrix")] out string[,] @FullResourceAttributeMatrix, [Alias("ResourceAttributeMatrix_ERROR")] out string[,] @ResourceAttributeMatrix_ERROR, [Alias("ResourceAttributeMatrix_INUSE")] out string[,] @ResourceAttributeMatrix_INUSE, [Alias("ResourceAttributeMatrix_MAX")] out string[,] @ResourceAttributeMatrix_MAX, [Alias("ResourceAttributeMatrix_OFF")] out string[,] @ResourceAttributeMatrix_OFF, [Alias("ResourceAttributeMatrix_PROVISIONING")] out string[,] @ResourceAttributeMatrix_PROVISIONING, [Alias("ResourceAttributeMatrix_READY")] out string[,] @ResourceAttributeMatrix_READY, [Alias("NumInState_ERROR")] out double @NumInState_ERROR, [Alias("NumInState_FULL")] out double @NumInState_FULL, [Alias("NumInState_INUSE")] out double @NumInState_INUSE, [Alias("NumInState_MAX")] out double @NumInState_MAX, [Alias("NumInState_OFF")] out double @NumInState_OFF, [Alias("NumInState_PROVISIONING")] out double @NumInState_PROVISIONING, [Alias("NumInState_READY")] out double @NumInState_READY, [Alias("FastLab_BootTimeSecs")] out double @FastLab_BootTimeSecs, [Alias("FastLab_LabDefaultTTLMins")] out double @FastLab_LabDefaultTTLMins, [Alias("FastLab_ReadyPoolSize")] out double @FastLab_ReadyPoolSize)
+		public void @Util_GetSystemAttributeInformation([Alias("RAM_FULL")] out string[,] @RAM_FULL, [Alias("RAM_ERROR")] out string[,] @RAM_ERROR, [Alias("RAM_INUSE")] out string[,] @RAM_INUSE, [Alias("RAM_MAX")] out string[,] @RAM_MAX, [Alias("RAM_READY")] out string[,] @RAM_READY, [Alias("RAM_OFF")] out string[,] @RAM_OFF, [Alias("RAM_OFF_Claimed")] out string[,] @RAM_OFF_Claimed, [Alias("RAM_OFF_Unclaimed")] out string[,] @RAM_OFF_Unclaimed, [Alias("RAM_PROV")] out string[,] @RAM_PROV, [Alias("RAM_PROV_Claimed")] out string[,] @RAM_PROV_Claimed, [Alias("RAM_PROV_Unclaimed")] out string[,] @RAM_PROV_Unclaimed, [Alias("NumInState_ERROR")] out double @NumInState_ERROR, [Alias("NumInState_FULL")] out double @NumInState_FULL, [Alias("NumInState_INUSE")] out double @NumInState_INUSE, [Alias("NumInState_MAX")] out double @NumInState_MAX, [Alias("NumInState_READY")] out double @NumInState_READY, [Alias("NumInState_OFF")] out double @NumInState_OFF, [Alias("NumInState_OFF_Claimed")] out double @NumInState_OFF_Claimed, [Alias("NumInState_OFF_Unclaimed")] out double @NumInState_OFF_Unclaimed, [Alias("NumInState_PROV")] out double @NumInState_PROV, [Alias("NumInState_PROV_Claimed")] out double @NumInState_PROV_Claimed, [Alias("NumInState_PROV_Unclaimed")] out double @NumInState_PROV_Unclaimed, [Alias("FastLab_BootTimeSecs")] out double @FastLab_BootTimeSecs, [Alias("FastLab_LabDefaultTTLMins")] out double @FastLab_LabDefaultTTLMins, [Alias("FastLab_ReadyPoolSize")] out double @FastLab_ReadyPoolSize)
 		{
 			lock(m_Util_GetSystemAttributeInformationFunctionInterpreterLock)
 			{
@@ -521,38 +524,54 @@ namespace QualiSystems.Driver
 				callId = CancellationContext.Current.CallId;
 			Dictionary<string, object> inputNamesValues = new Dictionary<string, object>();
 			Dictionary<string, Type> outputNamesTypes = new Dictionary<string, Type>();
-			outputNamesTypes["ResourceAttributeMatrix_FULL"] = typeof(string[,]);
-			outputNamesTypes["ResourceAttributeMatrix_ERROR"] = typeof(string[,]);
-			outputNamesTypes["ResourceAttributeMatrix_INUSE"] = typeof(string[,]);
-			outputNamesTypes["ResourceAttributeMatrix_MAX"] = typeof(string[,]);
-			outputNamesTypes["ResourceAttributeMatrix_OFF"] = typeof(string[,]);
-			outputNamesTypes["ResourceAttributeMatrix_PROVISIONING"] = typeof(string[,]);
-			outputNamesTypes["ResourceAttributeMatrix_READY"] = typeof(string[,]);
+			outputNamesTypes["RAM_FULL"] = typeof(string[,]);
+			outputNamesTypes["RAM_ERROR"] = typeof(string[,]);
+			outputNamesTypes["RAM_INUSE"] = typeof(string[,]);
+			outputNamesTypes["RAM_MAX"] = typeof(string[,]);
+			outputNamesTypes["RAM_READY"] = typeof(string[,]);
+			outputNamesTypes["RAM_OFF"] = typeof(string[,]);
+			outputNamesTypes["RAM_OFF_Claimed"] = typeof(string[,]);
+			outputNamesTypes["RAM_OFF_Unclaimed"] = typeof(string[,]);
+			outputNamesTypes["RAM_PROV"] = typeof(string[,]);
+			outputNamesTypes["RAM_PROV_Claimed"] = typeof(string[,]);
+			outputNamesTypes["RAM_PROV_Unclaimed"] = typeof(string[,]);
 			outputNamesTypes["NumInState_ERROR"] = typeof(double);
 			outputNamesTypes["NumInState_FULL"] = typeof(double);
 			outputNamesTypes["NumInState_INUSE"] = typeof(double);
 			outputNamesTypes["NumInState_MAX"] = typeof(double);
-			outputNamesTypes["NumInState_OFF"] = typeof(double);
-			outputNamesTypes["NumInState_PROVISIONING"] = typeof(double);
 			outputNamesTypes["NumInState_READY"] = typeof(double);
+			outputNamesTypes["NumInState_OFF"] = typeof(double);
+			outputNamesTypes["NumInState_OFF_Claimed"] = typeof(double);
+			outputNamesTypes["NumInState_OFF_Unclaimed"] = typeof(double);
+			outputNamesTypes["NumInState_PROV"] = typeof(double);
+			outputNamesTypes["NumInState_PROV_Claimed"] = typeof(double);
+			outputNamesTypes["NumInState_PROV_Unclaimed"] = typeof(double);
 			outputNamesTypes["FastLab_BootTimeSecs"] = typeof(double);
 			outputNamesTypes["FastLab_LabDefaultTTLMins"] = typeof(double);
 			outputNamesTypes["FastLab_ReadyPoolSize"] = typeof(double);
 			Dictionary<string, object> outputNamesValues = m_Util_GetSystemAttributeInformationFunctionInterpreter.Run(callId, inputNamesValues, outputNamesTypes);
-			@FullResourceAttributeMatrix =  (string[,])outputNamesValues["ResourceAttributeMatrix_FULL"];
-			@ResourceAttributeMatrix_ERROR =  (string[,])outputNamesValues["ResourceAttributeMatrix_ERROR"];
-			@ResourceAttributeMatrix_INUSE =  (string[,])outputNamesValues["ResourceAttributeMatrix_INUSE"];
-			@ResourceAttributeMatrix_MAX =  (string[,])outputNamesValues["ResourceAttributeMatrix_MAX"];
-			@ResourceAttributeMatrix_OFF =  (string[,])outputNamesValues["ResourceAttributeMatrix_OFF"];
-			@ResourceAttributeMatrix_PROVISIONING =  (string[,])outputNamesValues["ResourceAttributeMatrix_PROVISIONING"];
-			@ResourceAttributeMatrix_READY =  (string[,])outputNamesValues["ResourceAttributeMatrix_READY"];
+			@RAM_FULL =  (string[,])outputNamesValues["RAM_FULL"];
+			@RAM_ERROR =  (string[,])outputNamesValues["RAM_ERROR"];
+			@RAM_INUSE =  (string[,])outputNamesValues["RAM_INUSE"];
+			@RAM_MAX =  (string[,])outputNamesValues["RAM_MAX"];
+			@RAM_READY =  (string[,])outputNamesValues["RAM_READY"];
+			@RAM_OFF =  (string[,])outputNamesValues["RAM_OFF"];
+			@RAM_OFF_Claimed =  (string[,])outputNamesValues["RAM_OFF_Claimed"];
+			@RAM_OFF_Unclaimed =  (string[,])outputNamesValues["RAM_OFF_Unclaimed"];
+			@RAM_PROV =  (string[,])outputNamesValues["RAM_PROV"];
+			@RAM_PROV_Claimed =  (string[,])outputNamesValues["RAM_PROV_Claimed"];
+			@RAM_PROV_Unclaimed =  (string[,])outputNamesValues["RAM_PROV_Unclaimed"];
 			@NumInState_ERROR =  (double)outputNamesValues["NumInState_ERROR"];
 			@NumInState_FULL =  (double)outputNamesValues["NumInState_FULL"];
 			@NumInState_INUSE =  (double)outputNamesValues["NumInState_INUSE"];
 			@NumInState_MAX =  (double)outputNamesValues["NumInState_MAX"];
-			@NumInState_OFF =  (double)outputNamesValues["NumInState_OFF"];
-			@NumInState_PROVISIONING =  (double)outputNamesValues["NumInState_PROVISIONING"];
 			@NumInState_READY =  (double)outputNamesValues["NumInState_READY"];
+			@NumInState_OFF =  (double)outputNamesValues["NumInState_OFF"];
+			@NumInState_OFF_Claimed =  (double)outputNamesValues["NumInState_OFF_Claimed"];
+			@NumInState_OFF_Unclaimed =  (double)outputNamesValues["NumInState_OFF_Unclaimed"];
+			@NumInState_PROV =  (double)outputNamesValues["NumInState_PROV"];
+			@NumInState_PROV_Claimed =  (double)outputNamesValues["NumInState_PROV_Claimed"];
+			@NumInState_PROV_Unclaimed =  (double)outputNamesValues["NumInState_PROV_Unclaimed"];
 			@FastLab_BootTimeSecs =  (double)outputNamesValues["FastLab_BootTimeSecs"];
 			@FastLab_LabDefaultTTLMins =  (double)outputNamesValues["FastLab_LabDefaultTTLMins"];
 			@FastLab_ReadyPoolSize =  (double)outputNamesValues["FastLab_ReadyPoolSize"];
@@ -560,7 +579,7 @@ namespace QualiSystems.Driver
 
 		[Folder("Functions")]
 		[Cancelable]
-		public void @Util_ProvisioningPush([Alias("NumInState_PROVISIONING")]  double @NumInState_PROVISIONING, [Alias("ResourceAttributeMatrix_PROVISIONING")]  string[,] @ResourceAttributeMatrix_PROVISIONING, [Alias("MadeUpdates")] out double @MadeUpdates)
+		public void @Util_ProvisioningPush([Alias("NumInState_PROV")]  double @NumInState_PROV, [Alias("RAM_PROV")]  string[,] @RAM_PROV, [Alias("MadeUpdates")] out double @MadeUpdates)
 		{
 			lock(m_Util_ProvisioningPushFunctionInterpreterLock)
 			{
@@ -571,8 +590,8 @@ namespace QualiSystems.Driver
 			if(CancellationContext.Current != null)
 				callId = CancellationContext.Current.CallId;
 			Dictionary<string, object> inputNamesValues = new Dictionary<string, object>();
-			inputNamesValues["NumInState_PROVISIONING"] = @NumInState_PROVISIONING;
-			inputNamesValues["ResourceAttributeMatrix_PROVISIONING"] = @ResourceAttributeMatrix_PROVISIONING;
+			inputNamesValues["NumInState_PROV"] = @NumInState_PROV;
+			inputNamesValues["RAM_PROV"] = @RAM_PROV;
 			Dictionary<string, Type> outputNamesTypes = new Dictionary<string, Type>();
 			outputNamesTypes["MadeUpdates"] = typeof(double);
 			Dictionary<string, object> outputNamesValues = m_Util_ProvisioningPushFunctionInterpreter.Run(callId, inputNamesValues, outputNamesTypes);
@@ -581,7 +600,7 @@ namespace QualiSystems.Driver
 
 		[Folder("Functions")]
 		[Cancelable]
-		public void @Util_QueryUserHasActiveSystem([Alias("ResourceAttributeMatrix_FULL")]  string[,] @ResourceAttributeMatrix_FULL, [Alias("UserID")]  string @UserID, [Alias("Result_Matrix")] out string[,] @Result_Matrix, [Alias("Result_NumUserEntries")] out double @Result_NumUserEntries)
+		public void @Util_QueryUserHasActiveSystem([Alias("RAM_FULL")]  string[,] @RAM_FULL, [Alias("UserID")]  string @UserID, [Alias("Result_Matrix")] out string[,] @Result_Matrix, [Alias("Result_NumUserEntries")] out double @Result_NumUserEntries)
 		{
 			lock(m_Util_QueryUserHasActiveSystemFunctionInterpreterLock)
 			{
@@ -592,7 +611,7 @@ namespace QualiSystems.Driver
 			if(CancellationContext.Current != null)
 				callId = CancellationContext.Current.CallId;
 			Dictionary<string, object> inputNamesValues = new Dictionary<string, object>();
-			inputNamesValues["ResourceAttributeMatrix_FULL"] = @ResourceAttributeMatrix_FULL;
+			inputNamesValues["RAM_FULL"] = @RAM_FULL;
 			inputNamesValues["UserID"] = @UserID;
 			Dictionary<string, Type> outputNamesTypes = new Dictionary<string, Type>();
 			outputNamesTypes["Result_Matrix"] = typeof(string[,]);

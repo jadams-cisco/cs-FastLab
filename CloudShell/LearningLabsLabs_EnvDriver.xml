@@ -29,31 +29,34 @@
   </Function>
   <Function Name="System_Claim" Folder="Functions" IsImplemented="true">
     <Parameter Name="UserID" Type="string" Direction="In" />
-    <Parameter Name="ResourceAttributeMatrix_OFF" Type="string[,]" Direction="In" />
-    <Parameter Name="ResourceAttributeMatrix_PROVISIONING" Type="string[,]" Direction="In" />
-    <Parameter Name="ResourceAttributeMatrix_READY" Type="string[,]" Direction="In" />
-    <Parameter Name="FLAG_SUCCESS" Type="double" Direction="Out" />
+    <Parameter Name="RAM_READY" Type="string[,]" Direction="In" />
+    <Parameter Name="RAM_PROV_Unclaimed" Type="string[,]" Direction="In" />
+    <Parameter Name="RAM_OFF_Unclaimed" Type="string[,]" Direction="In" />
+    <Parameter Name="NumInState_READY" Type="double" Direction="In" />
+    <Parameter Name="NumInState_OFF_Unclaimed" Type="double" Direction="In" />
+    <Parameter Name="NumInState_PROV_Unclaimed" Type="double" Direction="In" />
+    <Parameter Name="FLAG_CLAIM_SUCCESS" Type="double" Direction="Out" />
     <Parameter Name="ClaimedSystemName" Type="string" Direction="Out" />
     <Parameter Name="FLAG_LOST_RACE" Type="double" Direction="Out" />
   </Function>
   <Function Name="System_GetAttribute" Folder="Functions" IsImplemented="true">
-    <Parameter Name="ResourceName" Type="string" Direction="In" />
+    <Parameter Name="SystemName" Type="string" Direction="In" />
     <Parameter Name="AttributeName" Type="string" Direction="In" />
     <Parameter Name="AttributeValue" Type="string" Direction="Out" />
   </Function>
   <Function Name="System_Provision" Folder="Functions" IsImplemented="true">
-    <Parameter Name="ResourceName" Type="string" Direction="In" />
+    <Parameter Name="SystemName" Type="string" Direction="In" />
     <Parameter Name="BootTimeSecs" Type="double" Direction="In" />
     <Parameter Name="UserID" Type="string" Direction="In" />
   </Function>
   <Function Name="System_ProvisionOffClaimed" Folder="Functions" IsImplemented="true" />
   <Function Name="System_SetAttribute" Folder="Functions" IsImplemented="true">
-    <Parameter Name="ResourceName" Type="string" Direction="In" />
+    <Parameter Name="SystemName" Type="string" Direction="In" />
     <Parameter Name="AttributeName" Type="string" Direction="In" />
     <Parameter Name="NewAttributeValue" Type="string" Direction="In" />
   </Function>
   <Function Name="System_Terminate" Folder="Functions" IsImplemented="true">
-    <Parameter Name="ResourceName" Type="string" Direction="In" />
+    <Parameter Name="SystemName" Type="string" Direction="In" />
     <Parameter Name="VMName" Type="string" Direction="In" />
   </Function>
   <Function Name="Util_GetReservationId" Folder="Functions" IsImplemented="true">
@@ -61,31 +64,39 @@
     <Parameter Name="ReservationID" Type="string" Direction="Out" />
   </Function>
   <Function Name="Util_GetSystemAttributeInformation" Folder="Functions" IsImplemented="true">
-    <Parameter Name="FullResourceAttributeMatrix" Type="string[,]" Direction="Out" />
-    <Parameter Name="ResourceAttributeMatrix_ERROR" Type="string[,]" Direction="Out" />
-    <Parameter Name="ResourceAttributeMatrix_INUSE" Type="string[,]" Direction="Out" />
-    <Parameter Name="ResourceAttributeMatrix_MAX" Type="string[,]" Direction="Out" />
-    <Parameter Name="ResourceAttributeMatrix_OFF" Type="string[,]" Direction="Out" />
-    <Parameter Name="ResourceAttributeMatrix_PROVISIONING" Type="string[,]" Direction="Out" />
-    <Parameter Name="ResourceAttributeMatrix_READY" Type="string[,]" Direction="Out" />
+    <Parameter Name="RAM_FULL" Type="string[,]" Direction="Out" />
+    <Parameter Name="RAM_ERROR" Type="string[,]" Direction="Out" />
+    <Parameter Name="RAM_INUSE" Type="string[,]" Direction="Out" />
+    <Parameter Name="RAM_MAX" Type="string[,]" Direction="Out" />
+    <Parameter Name="RAM_READY" Type="string[,]" Direction="Out" />
+    <Parameter Name="RAM_OFF" Type="string[,]" Direction="Out" />
+    <Parameter Name="RAM_OFF_Claimed" Type="string[,]" Direction="Out" />
+    <Parameter Name="RAM_OFF_Unclaimed" Type="string[,]" Direction="Out" />
+    <Parameter Name="RAM_PROV" Type="string[,]" Direction="Out" />
+    <Parameter Name="RAM_PROV_Claimed" Type="string[,]" Direction="Out" />
+    <Parameter Name="RAM_PROV_Unclaimed" Type="string[,]" Direction="Out" />
     <Parameter Name="NumInState_ERROR" Type="double" Direction="Out" />
     <Parameter Name="NumInState_FULL" Type="double" Direction="Out" />
     <Parameter Name="NumInState_INUSE" Type="double" Direction="Out" />
     <Parameter Name="NumInState_MAX" Type="double" Direction="Out" />
-    <Parameter Name="NumInState_OFF" Type="double" Direction="Out" />
-    <Parameter Name="NumInState_PROVISIONING" Type="double" Direction="Out" />
     <Parameter Name="NumInState_READY" Type="double" Direction="Out" />
+    <Parameter Name="NumInState_OFF" Type="double" Direction="Out" />
+    <Parameter Name="NumInState_OFF_Claimed" Type="double" Direction="Out" />
+    <Parameter Name="NumInState_OFF_Unclaimed" Type="double" Direction="Out" />
+    <Parameter Name="NumInState_PROV" Type="double" Direction="Out" />
+    <Parameter Name="NumInState_PROV_Claimed" Type="double" Direction="Out" />
+    <Parameter Name="NumInState_PROV_Unclaimed" Type="double" Direction="Out" />
     <Parameter Name="FastLab_BootTimeSecs" Type="double" Direction="Out" />
     <Parameter Name="FastLab_LabDefaultTTLMins" Type="double" Direction="Out" />
     <Parameter Name="FastLab_ReadyPoolSize" Type="double" Direction="Out" />
   </Function>
   <Function Name="Util_ProvisioningPush" Folder="Functions" IsImplemented="true">
-    <Parameter Name="NumInState_PROVISIONING" Type="double" Direction="In" />
-    <Parameter Name="ResourceAttributeMatrix_PROVISIONING" Type="string[,]" Direction="In" />
+    <Parameter Name="NumInState_PROV" Type="double" Direction="In" />
+    <Parameter Name="RAM_PROV" Type="string[,]" Direction="In" />
     <Parameter Name="MadeUpdates" Type="double" Direction="Out" />
   </Function>
   <Function Name="Util_QueryUserHasActiveSystem" Folder="Functions" IsImplemented="true">
-    <Parameter Name="ResourceAttributeMatrix_FULL" Type="string[,]" Direction="In" />
+    <Parameter Name="RAM_FULL" Type="string[,]" Direction="In" />
     <Parameter Name="UserID" Type="string" Direction="In" />
     <Parameter Name="Result_Matrix" Type="string[,]" Direction="Out" />
     <Parameter Name="Result_NumUserEntries" Type="double" Direction="Out" />

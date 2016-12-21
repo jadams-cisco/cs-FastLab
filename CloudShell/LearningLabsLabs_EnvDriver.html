@@ -301,37 +301,37 @@
           </td><td>In</td><td><b>UserID</b></td><td><span class="description" /></td></tr></table></div><a class="iref" href="#TOC">back to TOC</a><HR /><div class="command"><a name="System_Claim" /><h3>System_Claim</h3><p>
                 Folder Name = Functions</p><p><b>
 				  Syntax
-				</b></p><div class="codeSnippetContainerCodeContainer"><div class="codeSnippetContainerCode" dir="ltr"><div style="color:Black;"><pre>System_Claim(UserID, ResourceAttributeMatrix_OFF, ResourceAttributeMatrix_PROVISIONING, ResourceAttributeMatrix_READY, out FLAG_SUCCESS, out ClaimedSystemName, out FLAG_LOST_RACE)</pre></div></div></div><p><b>
+				</b></p><div class="codeSnippetContainerCodeContainer"><div class="codeSnippetContainerCode" dir="ltr"><div style="color:Black;"><pre>System_Claim(UserID, RAM_READY, RAM_PROV_Unclaimed, RAM_OFF_Unclaimed, NumInState_READY, NumInState_OFF_Unclaimed, NumInState_PROV_Unclaimed, out FLAG_CLAIM_SUCCESS, out ClaimedSystemName, out FLAG_LOST_RACE)</pre></div></div></div><p><b>
         Parameters
       </b></p><table><tr><th style="width: 60pt;">Type</th><th style="width: 50pt;">Direction</th><th style="width: 150pt;">Name</th><th>Description</th></tr><tr><td>
             String
           </td><td>In</td><td><b>UserID</b></td><td><span class="description" /></td></tr><tr><td>
             String Matrix
-          </td><td>In</td><td><b>ResourceAttributeMatrix_OFF</b></td><td><span class="description" /></td></tr><tr><td>
+          </td><td>In</td><td><b>RAM_READY</b></td><td><span class="description" /></td></tr><tr><td>
             String Matrix
-          </td><td>In</td><td><b>ResourceAttributeMatrix_PROVISIONING</b></td><td><span class="description" /></td></tr><tr><td>
+          </td><td>In</td><td><b>RAM_PROV_Unclaimed</b></td><td><span class="description" /></td></tr><tr><td>
             String Matrix
-          </td><td>In</td><td><b>ResourceAttributeMatrix_READY</b></td><td><span class="description" /></td></tr><tr><td>double</td><td>Out</td><td><b>FLAG_SUCCESS</b></td><td><span class="description" /></td></tr><tr><td>
+          </td><td>In</td><td><b>RAM_OFF_Unclaimed</b></td><td><span class="description" /></td></tr><tr><td>double</td><td>In</td><td><b>NumInState_READY</b></td><td><span class="description" /></td></tr><tr><td>double</td><td>In</td><td><b>NumInState_OFF_Unclaimed</b></td><td><span class="description" /></td></tr><tr><td>double</td><td>In</td><td><b>NumInState_PROV_Unclaimed</b></td><td><span class="description" /></td></tr><tr><td>double</td><td>Out</td><td><b>FLAG_CLAIM_SUCCESS</b></td><td><span class="description" /></td></tr><tr><td>
             String
           </td><td>Out</td><td><b>ClaimedSystemName</b></td><td><span class="description" /></td></tr><tr><td>double</td><td>Out</td><td><b>FLAG_LOST_RACE</b></td><td><span class="description" /></td></tr></table></div><a class="iref" href="#TOC">back to TOC</a><HR /><div class="command"><a name="System_GetAttribute" /><h3>System_GetAttribute</h3><p>
                 Folder Name = Functions</p><p><b>
 				  Syntax
-				</b></p><div class="codeSnippetContainerCodeContainer"><div class="codeSnippetContainerCode" dir="ltr"><div style="color:Black;"><pre>System_GetAttribute(ResourceName, AttributeName, out AttributeValue)</pre></div></div></div><p><b>
+				</b></p><div class="codeSnippetContainerCodeContainer"><div class="codeSnippetContainerCode" dir="ltr"><div style="color:Black;"><pre>System_GetAttribute(SystemName, AttributeName, out AttributeValue)</pre></div></div></div><p><b>
         Parameters
       </b></p><table><tr><th style="width: 60pt;">Type</th><th style="width: 50pt;">Direction</th><th style="width: 150pt;">Name</th><th>Description</th></tr><tr><td>
             String
-          </td><td>In</td><td><b>ResourceName</b></td><td><span class="description" /></td></tr><tr><td>
+          </td><td>In</td><td><b>SystemName</b></td><td><span class="description" /></td></tr><tr><td>
             String
           </td><td>In</td><td><b>AttributeName</b></td><td><span class="description" /></td></tr><tr><td>
             String
           </td><td>Out</td><td><b>AttributeValue</b></td><td><span class="description" /></td></tr></table></div><a class="iref" href="#TOC">back to TOC</a><HR /><div class="command"><a name="System_Provision" /><h3>System_Provision</h3><p>
                 Folder Name = Functions</p><p><b>
 				  Syntax
-				</b></p><div class="codeSnippetContainerCodeContainer"><div class="codeSnippetContainerCode" dir="ltr"><div style="color:Black;"><pre>System_Provision(ResourceName, BootTimeSecs, UserID)</pre></div></div></div><p><b>
+				</b></p><div class="codeSnippetContainerCodeContainer"><div class="codeSnippetContainerCode" dir="ltr"><div style="color:Black;"><pre>System_Provision(SystemName, BootTimeSecs, UserID)</pre></div></div></div><p><b>
         Parameters
       </b></p><table><tr><th style="width: 60pt;">Type</th><th style="width: 50pt;">Direction</th><th style="width: 150pt;">Name</th><th>Description</th></tr><tr><td>
             String
-          </td><td>In</td><td><b>ResourceName</b></td><td><span class="description" /></td></tr><tr><td>double</td><td>In</td><td><b>BootTimeSecs</b></td><td><span class="description" /></td></tr><tr><td>
+          </td><td>In</td><td><b>SystemName</b></td><td><span class="description" /></td></tr><tr><td>double</td><td>In</td><td><b>BootTimeSecs</b></td><td><span class="description" /></td></tr><tr><td>
             String
           </td><td>In</td><td><b>UserID</b></td><td><span class="description" /></td></tr></table></div><a class="iref" href="#TOC">back to TOC</a><HR /><div class="command"><a name="System_ProvisionOffClaimed" /><h3>System_ProvisionOffClaimed</h3><p>
                 Folder Name = Functions</p><p><b>
@@ -341,22 +341,22 @@
       </b></p><table><tr><th style="width: 60pt;">Type</th><th style="width: 50pt;">Direction</th><th style="width: 150pt;">Name</th><th>Description</th></tr></table></div><a class="iref" href="#TOC">back to TOC</a><HR /><div class="command"><a name="System_SetAttribute" /><h3>System_SetAttribute</h3><p>
                 Folder Name = Functions</p><p><b>
 				  Syntax
-				</b></p><div class="codeSnippetContainerCodeContainer"><div class="codeSnippetContainerCode" dir="ltr"><div style="color:Black;"><pre>System_SetAttribute(ResourceName, AttributeName, NewAttributeValue)</pre></div></div></div><p><b>
+				</b></p><div class="codeSnippetContainerCodeContainer"><div class="codeSnippetContainerCode" dir="ltr"><div style="color:Black;"><pre>System_SetAttribute(SystemName, AttributeName, NewAttributeValue)</pre></div></div></div><p><b>
         Parameters
       </b></p><table><tr><th style="width: 60pt;">Type</th><th style="width: 50pt;">Direction</th><th style="width: 150pt;">Name</th><th>Description</th></tr><tr><td>
             String
-          </td><td>In</td><td><b>ResourceName</b></td><td><span class="description" /></td></tr><tr><td>
+          </td><td>In</td><td><b>SystemName</b></td><td><span class="description" /></td></tr><tr><td>
             String
           </td><td>In</td><td><b>AttributeName</b></td><td><span class="description" /></td></tr><tr><td>
             String
           </td><td>In</td><td><b>NewAttributeValue</b></td><td><span class="description" /></td></tr></table></div><a class="iref" href="#TOC">back to TOC</a><HR /><div class="command"><a name="System_Terminate" /><h3>System_Terminate</h3><p>
                 Folder Name = Functions</p><p><b>
 				  Syntax
-				</b></p><div class="codeSnippetContainerCodeContainer"><div class="codeSnippetContainerCode" dir="ltr"><div style="color:Black;"><pre>System_Terminate(ResourceName, VMName)</pre></div></div></div><p><b>
+				</b></p><div class="codeSnippetContainerCodeContainer"><div class="codeSnippetContainerCode" dir="ltr"><div style="color:Black;"><pre>System_Terminate(SystemName, VMName)</pre></div></div></div><p><b>
         Parameters
       </b></p><table><tr><th style="width: 60pt;">Type</th><th style="width: 50pt;">Direction</th><th style="width: 150pt;">Name</th><th>Description</th></tr><tr><td>
             String
-          </td><td>In</td><td><b>ResourceName</b></td><td><span class="description" /></td></tr><tr><td>
+          </td><td>In</td><td><b>SystemName</b></td><td><span class="description" /></td></tr><tr><td>
             String
           </td><td>In</td><td><b>VMName</b></td><td><span class="description" /></td></tr></table></div><a class="iref" href="#TOC">back to TOC</a><HR /><div class="command"><a name="Util_GetReservationId" /><h3>Util_GetReservationId</h3><p>
                 Folder Name = Functions</p><p><b>
@@ -370,37 +370,45 @@
           </td><td>Out</td><td><b>ReservationID</b></td><td><span class="description" /></td></tr></table></div><a class="iref" href="#TOC">back to TOC</a><HR /><div class="command"><a name="Util_GetSystemAttributeInformation" /><h3>Util_GetSystemAttributeInformation</h3><p>
                 Folder Name = Functions</p><p><b>
 				  Syntax
-				</b></p><div class="codeSnippetContainerCodeContainer"><div class="codeSnippetContainerCode" dir="ltr"><div style="color:Black;"><pre>Util_GetSystemAttributeInformation(out FullResourceAttributeMatrix, out ResourceAttributeMatrix_ERROR, out ResourceAttributeMatrix_INUSE, out ResourceAttributeMatrix_MAX, out ResourceAttributeMatrix_OFF, out ResourceAttributeMatrix_PROVISIONING, out ResourceAttributeMatrix_READY, out NumInState_ERROR, out NumInState_FULL, out NumInState_INUSE, out NumInState_MAX, out NumInState_OFF, out NumInState_PROVISIONING, out NumInState_READY, out FastLab_BootTimeSecs, out FastLab_LabDefaultTTLMins, out FastLab_ReadyPoolSize)</pre></div></div></div><p><b>
+				</b></p><div class="codeSnippetContainerCodeContainer"><div class="codeSnippetContainerCode" dir="ltr"><div style="color:Black;"><pre>Util_GetSystemAttributeInformation(out RAM_FULL, out RAM_ERROR, out RAM_INUSE, out RAM_MAX, out RAM_READY, out RAM_OFF, out RAM_OFF_Claimed, out RAM_OFF_Unclaimed, out RAM_PROV, out RAM_PROV_Claimed, out RAM_PROV_Unclaimed, out NumInState_ERROR, out NumInState_FULL, out NumInState_INUSE, out NumInState_MAX, out NumInState_READY, out NumInState_OFF, out NumInState_OFF_Claimed, out NumInState_OFF_Unclaimed, out NumInState_PROV, out NumInState_PROV_Claimed, out NumInState_PROV_Unclaimed, out FastLab_BootTimeSecs, out FastLab_LabDefaultTTLMins, out FastLab_ReadyPoolSize)</pre></div></div></div><p><b>
         Parameters
       </b></p><table><tr><th style="width: 60pt;">Type</th><th style="width: 50pt;">Direction</th><th style="width: 150pt;">Name</th><th>Description</th></tr><tr><td>
             String Matrix
-          </td><td>Out</td><td><b>FullResourceAttributeMatrix</b></td><td><span class="description" /></td></tr><tr><td>
+          </td><td>Out</td><td><b>RAM_FULL</b></td><td><span class="description" /></td></tr><tr><td>
             String Matrix
-          </td><td>Out</td><td><b>ResourceAttributeMatrix_ERROR</b></td><td><span class="description" /></td></tr><tr><td>
+          </td><td>Out</td><td><b>RAM_ERROR</b></td><td><span class="description" /></td></tr><tr><td>
             String Matrix
-          </td><td>Out</td><td><b>ResourceAttributeMatrix_INUSE</b></td><td><span class="description" /></td></tr><tr><td>
+          </td><td>Out</td><td><b>RAM_INUSE</b></td><td><span class="description" /></td></tr><tr><td>
             String Matrix
-          </td><td>Out</td><td><b>ResourceAttributeMatrix_MAX</b></td><td><span class="description" /></td></tr><tr><td>
+          </td><td>Out</td><td><b>RAM_MAX</b></td><td><span class="description" /></td></tr><tr><td>
             String Matrix
-          </td><td>Out</td><td><b>ResourceAttributeMatrix_OFF</b></td><td><span class="description" /></td></tr><tr><td>
+          </td><td>Out</td><td><b>RAM_READY</b></td><td><span class="description" /></td></tr><tr><td>
             String Matrix
-          </td><td>Out</td><td><b>ResourceAttributeMatrix_PROVISIONING</b></td><td><span class="description" /></td></tr><tr><td>
+          </td><td>Out</td><td><b>RAM_OFF</b></td><td><span class="description" /></td></tr><tr><td>
             String Matrix
-          </td><td>Out</td><td><b>ResourceAttributeMatrix_READY</b></td><td><span class="description" /></td></tr><tr><td>double</td><td>Out</td><td><b>NumInState_ERROR</b></td><td><span class="description" /></td></tr><tr><td>double</td><td>Out</td><td><b>NumInState_FULL</b></td><td><span class="description" /></td></tr><tr><td>double</td><td>Out</td><td><b>NumInState_INUSE</b></td><td><span class="description" /></td></tr><tr><td>double</td><td>Out</td><td><b>NumInState_MAX</b></td><td><span class="description" /></td></tr><tr><td>double</td><td>Out</td><td><b>NumInState_OFF</b></td><td><span class="description" /></td></tr><tr><td>double</td><td>Out</td><td><b>NumInState_PROVISIONING</b></td><td><span class="description" /></td></tr><tr><td>double</td><td>Out</td><td><b>NumInState_READY</b></td><td><span class="description" /></td></tr><tr><td>double</td><td>Out</td><td><b>FastLab_BootTimeSecs</b></td><td><span class="description" /></td></tr><tr><td>double</td><td>Out</td><td><b>FastLab_LabDefaultTTLMins</b></td><td><span class="description" /></td></tr><tr><td>double</td><td>Out</td><td><b>FastLab_ReadyPoolSize</b></td><td><span class="description" /></td></tr></table></div><a class="iref" href="#TOC">back to TOC</a><HR /><div class="command"><a name="Util_ProvisioningPush" /><h3>Util_ProvisioningPush</h3><p>
+          </td><td>Out</td><td><b>RAM_OFF_Claimed</b></td><td><span class="description" /></td></tr><tr><td>
+            String Matrix
+          </td><td>Out</td><td><b>RAM_OFF_Unclaimed</b></td><td><span class="description" /></td></tr><tr><td>
+            String Matrix
+          </td><td>Out</td><td><b>RAM_PROV</b></td><td><span class="description" /></td></tr><tr><td>
+            String Matrix
+          </td><td>Out</td><td><b>RAM_PROV_Claimed</b></td><td><span class="description" /></td></tr><tr><td>
+            String Matrix
+          </td><td>Out</td><td><b>RAM_PROV_Unclaimed</b></td><td><span class="description" /></td></tr><tr><td>double</td><td>Out</td><td><b>NumInState_ERROR</b></td><td><span class="description" /></td></tr><tr><td>double</td><td>Out</td><td><b>NumInState_FULL</b></td><td><span class="description" /></td></tr><tr><td>double</td><td>Out</td><td><b>NumInState_INUSE</b></td><td><span class="description" /></td></tr><tr><td>double</td><td>Out</td><td><b>NumInState_MAX</b></td><td><span class="description" /></td></tr><tr><td>double</td><td>Out</td><td><b>NumInState_READY</b></td><td><span class="description" /></td></tr><tr><td>double</td><td>Out</td><td><b>NumInState_OFF</b></td><td><span class="description" /></td></tr><tr><td>double</td><td>Out</td><td><b>NumInState_OFF_Claimed</b></td><td><span class="description" /></td></tr><tr><td>double</td><td>Out</td><td><b>NumInState_OFF_Unclaimed</b></td><td><span class="description" /></td></tr><tr><td>double</td><td>Out</td><td><b>NumInState_PROV</b></td><td><span class="description" /></td></tr><tr><td>double</td><td>Out</td><td><b>NumInState_PROV_Claimed</b></td><td><span class="description" /></td></tr><tr><td>double</td><td>Out</td><td><b>NumInState_PROV_Unclaimed</b></td><td><span class="description" /></td></tr><tr><td>double</td><td>Out</td><td><b>FastLab_BootTimeSecs</b></td><td><span class="description" /></td></tr><tr><td>double</td><td>Out</td><td><b>FastLab_LabDefaultTTLMins</b></td><td><span class="description" /></td></tr><tr><td>double</td><td>Out</td><td><b>FastLab_ReadyPoolSize</b></td><td><span class="description" /></td></tr></table></div><a class="iref" href="#TOC">back to TOC</a><HR /><div class="command"><a name="Util_ProvisioningPush" /><h3>Util_ProvisioningPush</h3><p>
                 Folder Name = Functions</p><p><b>
 				  Syntax
-				</b></p><div class="codeSnippetContainerCodeContainer"><div class="codeSnippetContainerCode" dir="ltr"><div style="color:Black;"><pre>Util_ProvisioningPush(NumInState_PROVISIONING, ResourceAttributeMatrix_PROVISIONING, out MadeUpdates)</pre></div></div></div><p><b>
+				</b></p><div class="codeSnippetContainerCodeContainer"><div class="codeSnippetContainerCode" dir="ltr"><div style="color:Black;"><pre>Util_ProvisioningPush(NumInState_PROV, RAM_PROV, out MadeUpdates)</pre></div></div></div><p><b>
         Parameters
-      </b></p><table><tr><th style="width: 60pt;">Type</th><th style="width: 50pt;">Direction</th><th style="width: 150pt;">Name</th><th>Description</th></tr><tr><td>double</td><td>In</td><td><b>NumInState_PROVISIONING</b></td><td><span class="description" /></td></tr><tr><td>
+      </b></p><table><tr><th style="width: 60pt;">Type</th><th style="width: 50pt;">Direction</th><th style="width: 150pt;">Name</th><th>Description</th></tr><tr><td>double</td><td>In</td><td><b>NumInState_PROV</b></td><td><span class="description" /></td></tr><tr><td>
             String Matrix
-          </td><td>In</td><td><b>ResourceAttributeMatrix_PROVISIONING</b></td><td><span class="description" /></td></tr><tr><td>double</td><td>Out</td><td><b>MadeUpdates</b></td><td><span class="description" /></td></tr></table></div><a class="iref" href="#TOC">back to TOC</a><HR /><div class="command"><a name="Util_QueryUserHasActiveSystem" /><h3>Util_QueryUserHasActiveSystem</h3><p>
+          </td><td>In</td><td><b>RAM_PROV</b></td><td><span class="description" /></td></tr><tr><td>double</td><td>Out</td><td><b>MadeUpdates</b></td><td><span class="description" /></td></tr></table></div><a class="iref" href="#TOC">back to TOC</a><HR /><div class="command"><a name="Util_QueryUserHasActiveSystem" /><h3>Util_QueryUserHasActiveSystem</h3><p>
                 Folder Name = Functions</p><p><b>
 				  Syntax
-				</b></p><div class="codeSnippetContainerCodeContainer"><div class="codeSnippetContainerCode" dir="ltr"><div style="color:Black;"><pre>Util_QueryUserHasActiveSystem(ResourceAttributeMatrix_FULL, UserID, out Result_Matrix, out Result_NumUserEntries)</pre></div></div></div><p><b>
+				</b></p><div class="codeSnippetContainerCodeContainer"><div class="codeSnippetContainerCode" dir="ltr"><div style="color:Black;"><pre>Util_QueryUserHasActiveSystem(RAM_FULL, UserID, out Result_Matrix, out Result_NumUserEntries)</pre></div></div></div><p><b>
         Parameters
       </b></p><table><tr><th style="width: 60pt;">Type</th><th style="width: 50pt;">Direction</th><th style="width: 150pt;">Name</th><th>Description</th></tr><tr><td>
             String Matrix
-          </td><td>In</td><td><b>ResourceAttributeMatrix_FULL</b></td><td><span class="description" /></td></tr><tr><td>
+          </td><td>In</td><td><b>RAM_FULL</b></td><td><span class="description" /></td></tr><tr><td>
             String
           </td><td>In</td><td><b>UserID</b></td><td><span class="description" /></td></tr><tr><td>
             String Matrix
