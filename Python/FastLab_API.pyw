@@ -2,7 +2,7 @@
 # API which integrates with CloudShell .exe drivers to provide 'labs' to end users without logging in and 'instantly'
 # Contact devnetsandbox@cisco.com with questions.
 #import statements
-from flask import Flask
+from flask import Flask, jsonify, send_from_directory
 from flask import request
 from waitress import serve
 import json
@@ -13,7 +13,7 @@ import pika
 app = Flask(__name__)
 
 # API URL only accepting posts - all functions of the API work through this singular URL
-@app.route('/sbAPI/v1', methods=['POST'])
+@app.route('/v1', methods=['POST'])
 def post():
     # Parses the input data from the POST - preforms exception/error checking
     errorCondition, apiObjects, errorJSON  = inputHandler(request.data)
@@ -33,26 +33,40 @@ def post():
         if authenticated == False:
             apiReturn = {
                 "status": "error",
-                "actionResult": "Invalid API Token"
+                "statusMessage": "Invalid API Token"
             }
-
-            return json.dumps(apiReturn)
+            asyncCsAutomations("log", "error", "na", "na", json.dumps(apiReturn))
+            return jsonify(apiReturn), 401
 
         # Initalize csAction object
         csApiObject = csAction(apiEnvironment, apiUser, apiTTL)
         # Trigger the automation for the csAction object by passing the the apiAction var
         apiReturn = csApiObject.triggerAction(apiAction)
 
+        #logs the api call
+        asyncCsAutomations("log", "ok", apiEnvironment, apiAction, apiUser)
+
         # Runs async process for managing the ready pool of systems.
-        if apiAction == "request":
-            asyncCsAutomations(apiEnvironment, "managePool", "jacoadam")
+        if apiAction == "request" or "terminate":
+            asyncCsAutomations("execute", "null", apiEnvironment, "managePool", "jacoadam")
 
         # Returns the output of the API to the enduser
-        return json.dumps(apiReturn)
+        return jsonify(apiReturn)
 
     # If parsing has returned an error, return the client the error.
     else:
-        return json.dumps(errorJSON)
+        # logs the api call
+        asyncCsAutomations("log", "error", "na", "na", json.dumps(errorJSON))
+        return jsonify(errorJSON), 400
+
+
+@app.route('/apiLog', methods=['GET', 'POST'])
+def apiLog():
+    return send_from_directory(directory="C:\\FastLab_API\\Logs", filename="apiLog.txt")
+
+@app.route('/asyncLog', methods=['GET', 'POST'])
+def asyncLog():
+    return send_from_directory(directory="C:\\FastLab_API\\Logs", filename="asyncLog.txt")
 
 # Extracts data from input body, handles data errors and exceptions.
 def inputHandler(apiBody):
@@ -143,9 +157,11 @@ def auth(apiToken):
         return False
 
 # Sends a message to the broker to manage the ReadyPool for the given lab.
-def asyncCsAutomations(env, action, user):
+def asyncCsAutomations(type, status, env, action, user):
     # Setup body
     body = {
+        "type": type,
+        "status": status,
         "environment": env,
         "action": action,
         "user": user
@@ -180,7 +196,7 @@ class csAction(object):
         # Initialize vars
         args = [self.environment, action, self.username, self.TTL]
         if action == "terminate":
-            asyncCsAutomations(self.environment, action, self.username)
+            asyncCsAutomations("execute", "ok", self.environment, action, self.username)
             output = {
                 "status": "success",
                 "minsToReady": "",
@@ -190,7 +206,7 @@ class csAction(object):
             return output
         else:
             try:
-                prog = subprocess.Popen(['C:\\FastLab_API\\cs-FastLab\\LearningLabsLabs_EnvDriver.exe'] + args,
+                prog = subprocess.Popen(['C:\\FastLab_API\\cs-FastLab\\CloudShell\\LearningLabsLabs_EnvDriver.exe'] + args,
                                         stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 output, error = prog.communicate()
                 jsonResp = json.loads(output)
@@ -203,6 +219,9 @@ class csAction(object):
                     "actionResult": ""
                 }
                 return output
+
+
+
 # Runs the web application with waitress
 if __name__ == "__main__":
-    serve(app, host='0.0.0.0', threads='45')
+    serve(app, listen="*:80", threads='45')
