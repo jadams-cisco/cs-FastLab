@@ -1,3 +1,6 @@
+#!python.exe
+import site
+
 # Created by Jacob Adams and Dan Klingler
 # API which integrates with CloudShell .exe drivers to provide 'labs' to end users without logging in and 'instantly'
 # Contact devnetsandbox@cisco.com with questions.
@@ -175,6 +178,29 @@ def asyncCsAutomations(type, status, env, action, user):
 
     channel.basic_publish(exchange='',
                           routing_key='ManagePool',
+                          body=json.dumps(body))
+    # Close connection with broker
+    connection.close()
+
+#writes the log in an asynchronous thread
+def writeLog():
+    # Setup body
+    body = {
+        "type": type,
+        "status": status,
+        "environment": env,
+        "action": action,
+        "user": user
+    }
+    # Create connection to Broker on local host
+    connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+    # Start connection channel
+    channel = connection.channel()
+    # instantiate queue as Log
+    channel.queue_declare(queue='Log')
+
+    channel.basic_publish(exchange='',
+                          routing_key='Log',
                           body=json.dumps(body))
     # Close connection with broker
     connection.close()

@@ -1,3 +1,6 @@
+#!python.exe
+import site
+
 import pika
 import subprocess
 import json
@@ -25,25 +28,6 @@ def callback(ch, method, properties, body):
             logger(logFile, log, False)
         except Exception as e:
             log = "%s [error] Failed to execute %s: %s\n" % (str(datetime.datetime.now()), str(jsonBody['action']), str(e))
-            print log
-            logger(logFile, log, True)
-    elif jsonBody['type'] == "log":
-        logFile = 'C:\\FastLab_API\\Logs\\apiLog.txt'
-        status = jsonBody['status']
-        environment = jsonBody['environment']
-        action = jsonBody['action']
-        user = jsonBody['user']
-        if status == "ok":
-            log = "%s API exec OK -- environment: %s, action: %s, user: %s\n" % (str(datetime.datetime.now()),
-                                                                               environment, action, user)
-            print log
-            logger(logFile, log, False)
-        elif status == "error":
-            errorJSON = json.loads(jsonBody['user'])
-            status = errorJSON['status']
-            statusMessage = errorJSON['statusMessage']
-            log = "%s API exec ERROR -- Status: %s, statusMessage: %s" % (str(datetime.datetime.now()),
-                                                                                  status, statusMessage)
             print log
             logger(logFile, log, True)
         else:
