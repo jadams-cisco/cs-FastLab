@@ -11,6 +11,7 @@ from waitress import serve
 import json
 import subprocess
 import pika
+import datetime
 
 # Declare web application instace as 'app'
 app = Flask(__name__)
@@ -18,6 +19,9 @@ app = Flask(__name__)
 # API URL only accepting posts - all functions of the API work through this singular URL
 @app.route('/v1', methods=['POST'])
 def post():
+    # Grabs current time for logging purposes
+    timeStamp = str(datetime.datetime.now())
+
     # Parses the input data from the POST - preforms exception/error checking
     errorCondition, apiObjects, errorJSON  = inputHandler(request.data)
 
@@ -38,7 +42,8 @@ def post():
                 "status": "error",
                 "statusMessage": "Invalid API Token"
             }
-            asyncCsAutomations("log", "error", "na", "na", json.dumps(apiReturn))
+            #asyncCsAutomations("log", "error", "na", "na", json.dumps(apiReturn))
+            writeLog("apiLog", timeStamp, apiEnvironment, apiUser, apiAction, "error", "Invalid API token")
             return jsonify(apiReturn), 401
 
         # Initalize csAction object
@@ -46,26 +51,57 @@ def post():
         # Trigger the automation for the csAction object by passing the the apiAction var
         apiReturn = csApiObject.triggerAction(apiAction)
 
-        #logs the api call
-        asyncCsAutomations("log", "ok", apiEnvironment, apiAction, apiUser)
+        print apiReturn
+
+        #logs the api call to API log
+        try:
+            if not str(apiReturn['statusMessage']):
+                writeLog("apiLog", timeStamp, apiEnvironment, apiUser, apiAction, apiReturn["status"],
+                         "null")
+            else:
+                writeLog("apiLog", timeStamp, apiEnvironment, apiUser, apiAction, apiReturn["status"],
+                         apiReturn["statusMessage"])
+        # This exception will catch an error if the cloudshell exe didn't return valid JSON.
+        except:
+            writeLog("apiLog", timeStamp, apiEnvironment, apiUser, apiAction, "CloudShell Error",
+                     str(apiReturn))
+
+        #logs the api to genLog
+        try:
+            writeGenLog("genLog", timeStamp, str(request.data), apiEnvironment, apiAction, apiUser, json.dumps(apiReturn),
+                        str(datetime.datetime.now()))
+        except Exception as e:
+            writeGenLog("genLog", timeStamp, str(request.data), apiEnvironment, apiAction, apiUser, str(e),
+                        str(datetime.datetime.now()))
 
         # Runs async process for managing the ready pool of systems.
         if apiAction == "request" or "terminate":
-            asyncCsAutomations("execute", "null", apiEnvironment, "managePool", "jacoadam")
+            asyncCsAutomations("managePool", apiEnvironment, "managePool", "adminWorker")
 
-        # Returns the output of the API to the enduser
-        return jsonify(apiReturn)
-
+        # Returns the output of the API to the enduser if CS ran sucessfully
+        try:
+            return jsonify(apiReturn)
+        # retuns error  response if CS fails to return JSON
+        except:
+            resp = {
+                "status": "fail",
+                "statusMessage": "Cloudshell has encountered a fatal error",
+                "actionResult": str(apiReturn)
+            }
+            return jsonify(resp), 400
     # If parsing has returned an error, return the client the error.
     else:
         # logs the api call
-        asyncCsAutomations("log", "error", "na", "na", json.dumps(errorJSON))
+        #asyncCsAutomations("log", "error", "na", "na", json.dumps(errorJSON))
         return jsonify(errorJSON), 400
-
 
 @app.route('/apiLog', methods=['GET', 'POST'])
 def apiLog():
     return send_from_directory(directory="C:\\FastLab_API\\Logs", filename="apiLog.txt")
+
+@app.route('/genLog', methods=['GET', 'POST'])
+def genLog():
+    return send_from_directory(directory="C:\\FastLab_API\\Logs", filename="genLog.txt")
 
 @app.route('/asyncLog', methods=['GET', 'POST'])
 def asyncLog():
@@ -150,21 +186,24 @@ def auth(apiToken):
     #opens and reads file containing auth key and retrieves it for auth
     f = open('C:\\FastLab_API\\auth.txt', 'r')
     metaData = json.loads(f.read())
-    authToken = metaData['token']
+    authToken = metaData['auth']
     f.close()
 
-    #verifes a valid token
-    if apiToken == authToken:
-        return True
-    else:
-        return False
+    authenticated = False
+
+
+    for i in authToken:
+        if apiToken == i['token']:
+            authenticated = True
+        else:
+            pass
+
+    return authenticated
 
 # Sends a message to the broker to manage the ReadyPool for the given lab.
-def asyncCsAutomations(type, status, env, action, user):
+def asyncCsAutomations(queue, env, action, user):
     # Setup body
     body = {
-        "type": type,
-        "status": status,
         "environment": env,
         "action": action,
         "user": user
@@ -174,23 +213,50 @@ def asyncCsAutomations(type, status, env, action, user):
     # Start connection channel
     channel = connection.channel()
     # instantiate queue as ManagePool
-    channel.queue_declare(queue='ManagePool')
+    channel.queue_declare(queue=queue)
 
     channel.basic_publish(exchange='',
-                          routing_key='ManagePool',
+                          routing_key=queue,
                           body=json.dumps(body))
     # Close connection with broker
     connection.close()
 
 #writes the log in an asynchronous thread
-def writeLog():
+def writeLog(type, timeStamp, env, user, action, status, statusMsg):
     # Setup body
     body = {
-        "type": type,
-        "status": status,
-        "environment": env,
+        "logType": type,
+        "timeStamp": timeStamp,
+        "env": env,
+        "user": user,
         "action": action,
-        "user": user
+        "status": status,
+        "statusMsg": statusMsg
+    }
+    # Create connection to Broker on local host
+    connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+    # Start connection channel
+    channel = connection.channel()
+    # instantiate queue as Log
+    channel.queue_declare(queue='Log')
+
+    channel.basic_publish(exchange='',
+                          routing_key='Log',
+                          body=json.dumps(body))
+    # Close connection with broker
+    connection.close()
+
+def writeGenLog(type, timeStamp, apiIn, env, action, user, apiOut, endTime):
+    # Setup body
+    body = {
+        "logType": type,
+        "timeStamp": timeStamp,
+        "input": apiIn,
+        "env": env,
+        "user": user,
+        "action": action,
+        "output": apiOut,
+        "endTime": endTime
     }
     # Create connection to Broker on local host
     connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
@@ -222,7 +288,7 @@ class csAction(object):
         # Initialize vars
         args = [self.environment, action, self.username, self.TTL]
         if action == "terminate":
-            asyncCsAutomations("execute", "ok", self.environment, action, self.username)
+            asyncCsAutomations("Terminate", self.environment, action, self.username)
             output = {
                 "status": "success",
                 "minsToReady": "",
@@ -232,7 +298,7 @@ class csAction(object):
             return output
         else:
             try:
-                prog = subprocess.Popen(['C:\\FastLab_API\\cs-FastLab\\CloudShell\\LearningLabsLabs_EnvDriver.exe'] + args,
+                prog = subprocess.Popen(['C:\FastLab_API\cs-FastLab\CloudShell\FastLab_CSDriver.exe'] + args,
                                         stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 output, error = prog.communicate()
                 jsonResp = json.loads(output)
